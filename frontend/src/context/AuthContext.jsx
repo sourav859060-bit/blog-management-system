@@ -20,9 +20,9 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  async function login(username, password) {
+  async function login(username, password, remember = true) {
     const tokens = await api.login(username, password);
-    setTokens(tokens);
+    setTokens(tokens, remember);
     const me = await api.me();
     setUser(me);
     return me;

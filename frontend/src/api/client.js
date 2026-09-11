@@ -1,15 +1,26 @@
 const API_BASE = "http://127.0.0.1:8000/api";
 
+
 function getTokens() {
-  return JSON.parse(localStorage.getItem("tokens") || "null");
+  const local = localStorage.getItem("tokens");
+  if (local) return JSON.parse(local);
+  const session = sessionStorage.getItem("tokens");
+  return session ? JSON.parse(session) : null;
 }
 
-export function setTokens(tokens) {
-  localStorage.setItem("tokens", JSON.stringify(tokens));
+export function setTokens(tokens, remember = true) {
+  if (remember) {
+    localStorage.setItem("tokens", JSON.stringify(tokens));
+    sessionStorage.removeItem("tokens");
+  } else {
+    sessionStorage.setItem("tokens", JSON.stringify(tokens));
+    localStorage.removeItem("tokens");
+  }
 }
 
 export function clearTokens() {
   localStorage.removeItem("tokens");
+  sessionStorage.removeItem("tokens");
 }
 
 async function request(path, options = {}) {
